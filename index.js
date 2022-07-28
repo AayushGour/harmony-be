@@ -60,7 +60,6 @@ app.post("/login", async (req, res) => {
         let data = req.body;
         console.log(`Accessed ${req.url}`);
         User.findOne({ username: data?.username }).then(async (response) => {
-            console.log("Got User")
             if (!!response) {
                 data.password = await encrypt(data.password);
                 if (response?.password === data.password) {
