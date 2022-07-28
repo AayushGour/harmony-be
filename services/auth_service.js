@@ -21,6 +21,7 @@ const generateToken = (data) => {
 
 const verifyToken = (req, res, next) => {
     const token = req.headers?.authorization?.replace("Bearer ", "");
+    console.log(`Accessed ${req.url}`);
     if (!token) {
         return res.status(403).send("Token is required for authentication");
     }

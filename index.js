@@ -46,13 +46,14 @@ app.get("/test", async (req, res) => {
     //     parseCreatorOnRise: req.query?.parseCreatorOnRise || false
     // }
     // let trending = await ytTrend.scrape_trending_page(params);
-
+    console.log(`Accessed ${req.url}`);
     let ytplt = await ytpl("PLn94luSwc8DmevxNAZK2GkA5of_eU9Mcb");
     res.status(200).send(ytplt);
 })
 
 app.post("/login", async (req, res) => {
     let data = req.body;
+    console.log(`Accessed ${req.url}`);
     User.findOne({ username: data?.username }).then(response => {
         if (!!response) {
             data.password = encrypt(data.password);
@@ -72,6 +73,7 @@ app.post("/login", async (req, res) => {
 
 app.put("/signup", (req, res) => {
     let data = req.body;
+    console.log(`Accessed ${req.url}`);
     try {
         User.find({ username: data?.username }).then((resp) => {
             if (resp?.length > 0) {
