@@ -59,10 +59,10 @@ app.post("/login", async (req, res) => {
     try {
         let data = req.body;
         console.log(`Accessed ${req.url}`);
-        User.findOne({ username: data?.username }).then(response => {
+        User.findOne({ username: data?.username }).then(async (response) => {
             console.log("Got User")
             if (!!response) {
-                data.password = encrypt(data.password);
+                data.password = await encrypt(data.password);
                 if (response?.password === data.password) {
                     let tokenResp = generateToken(data);
                     res.status(200).send(tokenResp);
@@ -70,6 +70,8 @@ app.post("/login", async (req, res) => {
                     res.status(401).send("Invalid Username or Password");
                 }
             } else {
+                console.log(response)
+                res.status(401).send("User not found");
             }
         }).catch(err => {
             console.error(err);
@@ -77,6 +79,7 @@ app.post("/login", async (req, res) => {
         })
     } catch (error) {
         console.error(error);
+        res.status(500).send(error?.message);
     }
 })
 
