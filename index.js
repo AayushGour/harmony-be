@@ -23,12 +23,16 @@ const appRouter = require("./controller/app-router");
 const { encrypt } = require("./services/encryption_service");
 const ytpl = require("ytpl");
 
-const connectionUri = MONGO_URI;
-mongoose.connect(connectionUri).then(resp => {
-    console.log("Connection Established")
-}).catch(error => {
+try {
+    const connectionUri = MONGO_URI;
+    mongoose.connect(connectionUri).then(resp => {
+        console.log("Connection Established")
+    }).catch(error => {
+        console.error(error)
+    });
+} catch (error) {
     console.error(error)
-});
+}
 
 
 app.use(express.json());
@@ -52,23 +56,28 @@ app.get("/test", async (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
-    let data = req.body;
-    console.log(`Accessed ${req.url}`);
-    User.findOne({ username: data?.username }).then(response => {
-        if (!!response) {
-            data.password = encrypt(data.password);
-            if (response?.password === data.password) {
-                let tokenResp = generateToken(data);
-                res.status(200).send(tokenResp);
+    try {
+        let data = req.body;
+        console.log(`Accessed ${req.url}`);
+        User.findOne({ username: data?.username }).then(response => {
+            console.log("Got User")
+            if (!!response) {
+                data.password = encrypt(data.password);
+                if (response?.password === data.password) {
+                    let tokenResp = generateToken(data);
+                    res.status(200).send(tokenResp);
+                } else {
+                    res.status(401).send("Invalid Username or Password");
+                }
             } else {
-                res.status(401).send("Invalid Username or Password");
             }
-        } else {
-        }
-    }).catch(err => {
-        console.error(err);
-        res.status(401).send("Invalid Username or Password");
-    })
+        }).catch(err => {
+            console.error(err);
+            res.status(401).send("Invalid Username or Password");
+        })
+    } catch (error) {
+        console.error(error);
+    }
 })
 
 app.put("/signup", (req, res) => {
