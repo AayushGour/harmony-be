@@ -12,3 +12,5 @@ foobar404
 lyrics-finder
 render.com
 https://developer.musixmatch.com/documentation/api-reference/track-lyrics-get
+javascript.info
+w3resource
