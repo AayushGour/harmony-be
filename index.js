@@ -24,6 +24,7 @@ const { encrypt } = require("./services/encryption_service");
 const ytpl = require("ytpl");
 
 try {
+    console.log("Connecting to DB")
     const connectionUri = MONGO_URI;
     mongoose.connect(connectionUri).then(resp => {
         console.log("Connection Established")
@@ -58,7 +59,7 @@ app.get("/test", async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
         let data = req.body;
-        console.log(`Accessed ${req.url}`);
+        console.log(`Accessed ${req.url} by ${data?.username}`);
         User.findOne({ username: data?.username }).then(async (response) => {
             if (!!response) {
                 data.password = await encrypt(data.password);
